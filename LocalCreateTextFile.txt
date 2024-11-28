@@ -1,1 +1,3 @@
 ﻿This is a VCS test. Initially added file to STAGING AREA
+
+This should be visible in the second commit.
