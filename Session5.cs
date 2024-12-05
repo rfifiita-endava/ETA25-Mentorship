@@ -23,5 +23,9 @@ public static class Session5
     {
         var result = number1 + number2;
         Console.WriteLine($"Adding '{number1}' and '{number2}' results in: {result}");
+        
+        var formatStr = "Adding '{0}' and '{1}' results in: {2}";
+        Console.WriteLine(string.Format(formatStr, number1, number2, result));
+
     }
 }
