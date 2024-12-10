@@ -65,6 +65,13 @@ public class TextBoxTests
         // Introducem valoare in campul de input "Full Name"
         fullNameInput.SendKeys(FullName);
 
+
+        // HOMEWORK ##############################
+        Driver.FindElement(By.Id("userEmail")).SendKeys(Email);
+        Driver.FindElement(By.Id("currentAddress")).SendKeys(CurrentAddress);
+        Driver.FindElement(By.Id("permanentAddress")).SendKeys(PermanentAddress);
+        // ########################################
+
         // Definim si initializam selector-ul pentru "Submit" button
         By submitButtonSelector = By.Id("submit");
         IWebElement submitButton = Driver.FindElement(submitButtonSelector);
@@ -78,11 +85,18 @@ public class TextBoxTests
         // Definim si initializam selector-ul pentru "Name" output
         By nameOutputSelector = By.Id("name");
         IWebElement nameOutput = Driver.FindElement(nameOutputSelector);
+        // HOMEWORK ##############################
+        string emailOutput = Driver.FindElement(By.Id("email")).Text;
+        string currentAddressOutput = Driver.FindElement(By.XPath("//p[@id='currentAddress']")).Text;
+        string permanentAddressOutput = Driver.FindElement(By.XPath("//p[@id='permanentAddress']")).Text;
 
         Thread.Sleep(5000);
 
         // Assert
         Assert.That(nameOutput.Text.Contains(FullName));
+        Assert.That(emailOutput.Contains(Email));
+        Assert.That(currentAddressOutput.Contains(CurrentAddress));
+        Assert.That(permanentAddressOutput.Contains(PermanentAddress));
     }
 
     [TearDown]
