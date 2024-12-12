@@ -32,6 +32,9 @@ public static class ConditionalStatements
 
         switch(dayOfWeek)
         {
+            case 1:
+                Console.WriteLine("Today is Monday");
+                break;
             case 2:
                 Console.WriteLine("Today is Tuesday");
                 break;
