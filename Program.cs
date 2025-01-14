@@ -104,14 +104,18 @@ var y = x;
 bool raspuns = false;
 bool raspuns2 = true;
 
-Console.WriteLine($"The NEGATION of raspuns is: {!raspuns}");               // TRUE
-Console.WriteLine($"The && operation output is: {raspuns && raspuns2}");    // FALSE
-Console.WriteLine($"The || operation output is: {raspuns || raspuns2}");    // TRUE
+//Console.WriteLine($"The NEGATION of raspuns is: {!raspuns}");               // TRUE
+//Console.WriteLine($"The && operation output is: {raspuns && raspuns2}");    // FALSE
+//Console.WriteLine($"The || operation output is: {raspuns || raspuns2}");    // TRUE
 
 
-Console.WriteLine($"The value of 'x' from Session5 class is: {Session5.x}");
-Console.WriteLine($"The value of 'y' from Session5 class is: {Session5.y}");
-Session5.AddXAndY();
-Console.WriteLine($"The result of adding x and y is:"); // 24
+//Console.WriteLine($"The value of 'x' from Session5 class is: {Session5.x}");
+//Console.WriteLine($"The value of 'y' from Session5 class is: {Session5.y}");
+//Session5.AddXAndY();
+//Console.WriteLine($"The result of adding x and y is:"); // 24
+
+Console.WriteLine("Please input some text!");
+var inputText = Console.ReadLine();
+Console.WriteLine($"You successfully wrote to console the following text: {inputText}");
 
 Console.ReadKey();
