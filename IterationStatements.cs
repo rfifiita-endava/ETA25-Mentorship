@@ -72,7 +72,7 @@ public static class IterationStatements
     {
         var personList = new List<string>() { "Radu", "Marius", "Iulian", "Noemi", "Romana" };
 
-        var favoriteFoods = new List<string>() { "Chicked", "Shawarma", "Pizza", "Fried Potatos", "Sarmale", "Mici" };
+        var favoriteFoods = new List<string>() { "Chicken", "Shawarma", "Pizza", "Fried Potatos", "Sarmale", "Mici" };
 
         for (int i = 0; i < personList.Count; i++)
         {
@@ -80,12 +80,12 @@ public static class IterationStatements
 
             if (person == "Marius")
             {
-                Console.Write($"{person}'s favorite foods are: ");
                 for (int j = 0; j < favoriteFoods.Count; j++)
                 {
                     var food = favoriteFoods[j];
                     if (food == "Pizza")
                     {
+                        Console.Write($"{person}'s favorite foods are: ");
                         Console.Write($"{food}; ");
                         break;
                     }

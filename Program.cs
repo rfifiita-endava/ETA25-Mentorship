@@ -114,8 +114,29 @@ bool raspuns2 = true;
 //Session5.AddXAndY();
 //Console.WriteLine($"The result of adding x and y is:"); // 24
 
-Console.WriteLine("Please input some text!");
-var inputText = Console.ReadLine();
-Console.WriteLine($"You successfully wrote to console the following text: {inputText}");
+//Console.WriteLine("Please input some text!");
+//var inputText = Console.ReadLine();
+//Console.WriteLine($"You successfully wrote to console the following text: {inputText}");
+
+Console.WriteLine("Please insert the number of iterations considering we start from number 0: ");
+int limit = Convert.ToInt32(Console.ReadLine());
+
+int counter = 0;
+//while (counter < limit)
+//{
+//    Console.WriteLine($"The current value of 'counter' is: {counter}");
+//    counter++;
+//}
+//Console.WriteLine("Exited the WHILE loop!");
+
+
+do
+{
+    Console.WriteLine($"The current value of 'counter' is: {counter}");
+    //counter++;
+}
+while( counter < limit );
+
+Console.WriteLine("Exited the DO-WHILE loop!");
 
 Console.ReadKey();
