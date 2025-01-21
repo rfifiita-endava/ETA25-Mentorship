@@ -4,9 +4,9 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 
-namespace ConsoleAppETA25.Automation.Session4;
+namespace ConsoleAppETA25.Automation.Session5;
 
-public class PracticeFormTestsV2
+public class IterationStatementsPart1
 {
     public IWebDriver Driver;
     public const string BaseUrl = "https://demoqa.com/";
@@ -33,11 +33,12 @@ public class PracticeFormTestsV2
         jsExecutor.ExecuteScript("window.scrollTo(0, 500);");
     }
 
-    [TestCase("Accounting", "Maths")]
-    [TestCase("Maths", "Computer Science")]
-    [TestCase("English", "Biology")]
-    public void SubjectTest(string userInputSubject1, string userInputSubject2)
+    [TestCase("Accounting, Maths, English, Chemistry, Commerce, Computer Science")]
+    [TestCase("Maths, Computer Science, Accounting, Arts, Social Studies")]
+    [TestCase("Biology, Hindi, History, Civics")]
+    public void AddRemoveSubjectLoopTest(string subjectsString)
     {
+        var subjects = subjectsString.Split(", ").ToList();
         AccessPracticeForm();
 
         // Scroll
@@ -47,11 +48,7 @@ public class PracticeFormTestsV2
         IWebElement subjectsInput = Driver.FindElement(By.Id("subjectsInput"));
 
         //Trimitem si selectam pe baza criteriilor in camp  
-        subjectsInput.SendKeys(userInputSubject1);
-        subjectsInput.SendKeys(Keys.Enter);
-
-        subjectsInput.SendKeys(userInputSubject2);
-        subjectsInput.SendKeys(Keys.Enter);
+        AddSubjects(subjectsInput, subjects);
 
         //Identificare buton de delete subiect din input field
         //IWebElement subjectDeleteButtonV1 = Driver.FindElement(By.XPath($"//div[contains(@class,\"multiValue\")][./div[text()=\"{userInputSubject1}\"]]/div[2]"));
@@ -61,41 +58,12 @@ public class PracticeFormTestsV2
 
         //IWebElement subjectDeleteButtonV5 = Driver.FindElement(By.XPath($"//div[contains(@class,\"multiValue\")][./div[text()=\"{userInputSubject2}\"]]/div[2]"));
 
-        RemoveSubject(userInputSubject1);
+        RemoveSubjects(subjects);
+
+        // Assert
+        Assert.That(SubjectExists(subjects[0]) == true);
 
         // Sleep
-        Thread.Sleep(5000);
-    }
-
-
-    [TestCase("NCR", "Delhi")]
-    public void StateAndCityTest(string userInputState, string userInputCity)
-    {
-        AccessPracticeForm();
-
-        // Identificam si initializam webElement-ul pentru State dropdown
-        IWebElement stateDropdown = Driver.FindElement(By.Id("react-select-3-input"));
-
-        stateDropdown.SendKeys(userInputState);
-        stateDropdown.SendKeys(Keys.Enter);
-
-        // Identificam si initializam webElement-ul pentru City dropdown
-        IWebElement cityDropdown = Driver.FindElement(By.Id("react-select-4-input"));
-
-        cityDropdown.SendKeys(userInputCity);
-        cityDropdown.SendKeys(Keys.Enter);
-
-        // Sleep
-        Thread.Sleep(5000);
-    }
-
-    [TestCase("2023", "November", "29")]
-    public void DateOfBirthTest(string currentYear, string currentMonthName, string currentMonthDay)
-    {
-        AccessPracticeForm();
-
-        SelectDateFromCalendar(currentYear, currentMonthName, currentMonthDay);
-
         Thread.Sleep(5000);
     }
 
@@ -107,6 +75,49 @@ public class PracticeFormTestsV2
             Driver.Quit();
             Driver.Dispose();
         }
+    }
+
+    public void AddSubjects(IWebElement inputField, List<string> subjects)
+    {
+        foreach (string subject in subjects)
+        {
+            inputField.SendKeys(subject);
+            inputField.SendKeys(Keys.Enter);
+
+            Console.WriteLine($"Added the following item to subjects: {subject}");
+        }
+    }
+
+    public void RemoveSubjects(List<string> subjects)
+    {
+        for (int i = subjects.Count - 1; i > 0; i--)
+        {
+            RemoveSubject(subjects[i]);
+
+            Console.WriteLine($"Removed the following item from the list: {subjects[i]}");
+        }
+    }
+
+    public bool SubjectExists(string subjectName)
+    {
+        var startingXpath = "//div[contains(@class,\"multiValue\")]";
+        var subjectWebElements = Driver.FindElements(By.XPath(startingXpath));
+        List<string> subjectsText = new List<string>();
+
+        foreach (var subject in subjectWebElements)
+        {
+            subjectsText.Add(subject.Text);
+        }
+
+        foreach (var text in subjectsText)
+        {
+            if (text.Trim() == subjectName)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void RemoveSubject(string subjectName)
