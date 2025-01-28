@@ -3,9 +3,9 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 
-namespace ConsoleAppETA25.Automation.Session5;
+namespace ConsoleAppETA25.Automation.Session6;
 
-public class IterationStatementsPart1
+public class IterationStatementsPart2
 {
     public IWebDriver Driver;
     public const string BaseUrl = "https://demoqa.com/";
@@ -35,6 +35,7 @@ public class IterationStatementsPart1
     [TestCase("Accounting, Maths, English, Chemistry, Commerce, Computer Science")]
     [TestCase("Maths, Computer Science, Accounting, Arts, Social Studies")]
     [TestCase("Biology, Hindi, History, Civics")]
+    [TestCase("Biology")]
     public void AddRemoveSubjectLoopTest(string subjectsString)
     {
         var subjects = subjectsString.Split(", ").ToList();
@@ -49,14 +50,6 @@ public class IterationStatementsPart1
         //Trimitem si selectam pe baza criteriilor in camp  
         AddSubjects(subjectsInput, subjects);
 
-        //Identificare buton de delete subiect din input field
-        //IWebElement subjectDeleteButtonV1 = Driver.FindElement(By.XPath($"//div[contains(@class,\"multiValue\")][./div[text()=\"{userInputSubject1}\"]]/div[2]"));
-        //IWebElement subjectDeleteButtonV2 = Driver.FindElement(By.XPath("//div[contains(@class,\"multiValue\")][./div[text()=\"English\"]]/div[contains(@class, \"__remove\")]"));
-        //IWebElement subjectDeleteButtonV3 = Driver.FindElement(By.XPath("//div[text()=\"English\"]/following-sibling::div"));
-        //IWebElement subjectDeleteButtonV4 = Driver.FindElement(By.XPath("//div[text()=\"English\"]/parent::div/div[2]"));
-
-        //IWebElement subjectDeleteButtonV5 = Driver.FindElement(By.XPath($"//div[contains(@class,\"multiValue\")][./div[text()=\"{userInputSubject2}\"]]/div[2]"));
-
         RemoveSubjects(subjects);
 
         // Assert
@@ -64,6 +57,94 @@ public class IterationStatementsPart1
 
         // Sleep
         Thread.Sleep(5000);
+    }
+
+    [TestCase("3;4")]
+    [TestCase("0;2;3")]
+    [TestCase("0;1;2")]
+    [TestCase("0;2")]
+    [TestCase("0;1")]
+    [TestCase("1")]
+    [TestCase("2")]
+    [TestCase("10")]
+    public void TestCheckboxWithLoop(string indexes)
+    {
+        var indexList = indexes.Split(";").ToList();
+        AccessPracticeForm();
+
+        // Scroll
+        jsExecutor.ExecuteScript("window.scrollTo(0, 200);");
+
+        By checkboxSelector = By.XPath("//div[label[starts-with(@for, \"hobbies-checkbox\")]]");
+        List<IWebElement> checkboxList = Driver.FindElements(checkboxSelector).ToList();
+
+        var i = 0;
+        while (i < indexList.Count)
+        {
+            var index = Convert.ToInt16(indexList[i]);
+            if (index >= 0 && index < checkboxList.Count)
+            {
+                checkboxList[index].Click();
+            }
+            i++;
+        }
+
+        var j = 0;
+        while (j < checkboxList.Count)
+        {
+            var checkbox = checkboxList[j].FindElement(By.XPath("./input"));
+            var isSelected = checkbox.Selected;
+            if (isSelected == true)
+            {
+                checkboxList[j].Click();
+            }
+            j++;
+        }
+
+        // Assert
+        foreach (var checkboxDiv in checkboxList)
+        {
+            var checkbox = checkboxDiv.FindElement(By.XPath("./input"));
+            var isSelected = checkbox.Selected;
+
+            Assert.That(isSelected == false);
+        }
+    }
+
+    [Test]
+    public void TestCheckboxWithLoop2()
+    {
+        AccessPracticeForm();
+
+        // Scroll
+        jsExecutor.ExecuteScript("window.scrollTo(0, 200);");
+
+        By checkboxSelector = By.XPath("//div[label[starts-with(@for, \"hobbies-checkbox\")]]");
+        List<IWebElement> checkboxList = Driver.FindElements(checkboxSelector).ToList();
+
+        checkboxList[0].Click();
+        checkboxList[2].Click();
+
+        var i = 0;
+        while (i < checkboxList.Count)
+        {
+            var checkbox = checkboxList[i].FindElement(By.XPath("./input"));
+            var isSelected = checkbox.Selected;
+            if (isSelected == true)
+            {
+                checkboxList[i].Click();
+            }
+            i++;
+        }
+
+        // Assert
+        foreach (var checkboxDiv in checkboxList)
+        {
+            var checkbox = checkboxDiv.FindElement(By.XPath("./input"));
+            var isSelected = checkbox.Selected;
+
+            Assert.That(isSelected == false);
+        }
     }
 
     [TearDown]
@@ -78,23 +159,37 @@ public class IterationStatementsPart1
 
     public void AddSubjects(IWebElement inputField, List<string> subjects)
     {
-        foreach (string subject in subjects)
+        var index = 0;
+        while (index < subjects.Count)
         {
+            var subject = subjects[index];
+
             inputField.SendKeys(subject);
             inputField.SendKeys(Keys.Enter);
 
             Console.WriteLine($"Added the following item to subjects: {subject}");
+
+            index++;
         }
     }
 
     public void RemoveSubjects(List<string> subjects)
     {
-        for (int i = subjects.Count - 1; i > 0; i--)
+        var index = subjects.Count - 1;
+        if (index == 0)
         {
-            RemoveSubject(subjects[i]);
-
-            Console.WriteLine($"Removed the following item from the list: {subjects[i]}");
+            return;
         }
+
+        do
+        {
+            var subject = subjects[index];
+
+            RemoveSubject(subject);
+            Console.WriteLine($"Removed the following item from the list: {subject}");
+
+            index--;
+        } while (index > 0);
     }
 
     public bool SubjectExists(string subjectName)
