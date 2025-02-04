@@ -3,7 +3,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 
-namespace ConsoleAppETA25.Automation.Session6;
+namespace ConsoleAppETA25.Automation.ProgrammingSession6;
 
 public class IterationStatementsPart2
 {

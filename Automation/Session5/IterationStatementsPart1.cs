@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium;
+using OpenQA.Selenium.BiDi.Modules.Script;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 
@@ -64,6 +65,93 @@ public class IterationStatementsPart1
 
         // Sleep
         Thread.Sleep(5000);
+    }
+
+    [Test]
+    public void SelectOnlyOddNumberedGridItemsTest()
+    {
+        AccessInteractionsSelectableGridTab();
+
+        // Selector for rows
+        By rowsSelector = By.XPath("//div[starts-with(@id,'row')]");
+
+        // List to store the rows
+        List<IWebElement> rowsList = Driver.FindElements(rowsSelector).ToList();
+
+        // We iterate the rows list
+        for(int i = 0; i < rowsList.Count;i++)
+        {
+            // List to store the cells for each row
+            List<IWebElement> rowCellsList = rowsList[i].FindElements(By.XPath("./li")).ToList();
+
+            // We iterate the cells list
+            for (int j = 0; j < rowCellsList.Count; j++)
+            {
+                if (i % 2 == 0)
+                {
+                    if (j % 2 == 0)
+                    {
+                        rowCellsList[j].Click();
+                        Console.WriteLine($"Clicked on '{rowCellsList[j].Text}' cell!");
+                    }
+                } else
+                {
+                    if (j % 2 != 0)
+                    {
+                        rowCellsList[j].Click();
+                        Console.WriteLine($"Clicked on '{rowCellsList[j].Text}' cell!");
+                    }
+                }
+            }
+        }
+
+        // Define selector for assert selected rowCell
+        By rowCellSelector = By.XPath("//div/li[contains(@class,'active')]");
+
+        // List to store the active cells
+        List<IWebElement> activeCells = Driver.FindElements(rowCellSelector).ToList();
+
+        List<string> selectedCellsTextList = new List<string>() { "One", "Three", "Five", "Seven", "Nine" };
+
+        // Iterating the lists to assert active cells
+        foreach (IWebElement rowCell in activeCells)
+        {
+            var cellText = rowCell.Text;
+            Assert.That(selectedCellsTextList.Contains(cellText), Is.True);
+        }
+    }
+
+
+    [Test]
+    public void SelectOnlyOddNumberedGridItemsShortTest()
+    {
+        AccessInteractionsSelectableGridTab();
+
+        // Selector for rows
+        By rowsCellsSelector = By.XPath("//div[starts-with(@id,'row')]/li");
+
+        // Define selector for assert selected rowCell
+        By rowActiveCellSelector = By.XPath("//div/li[contains(@class,'active')]");
+
+        // List to store the cells
+        List<IWebElement> cellsList = Driver.FindElements(rowsCellsSelector).ToList();
+
+        for (int i = 0; i < cellsList.Count; i+=2)
+        {
+            cellsList[i].Click();
+            Console.WriteLine($"Clicked on '{cellsList[i].Text}' cell!");
+        }
+
+        // List to store the active cells
+        List<string> activeCellsText = Driver.FindElements(rowActiveCellSelector)
+            .Select(cell => cell.Text)
+            .ToList();
+
+        // Criteria list for assertion
+        List<string> selectedCellsTextList = new List<string>() { "One", "Three", "Five", "Seven", "Nine" };
+
+        activeCellsText.ForEach(cell => Assert.That(selectedCellsTextList.Contains(cell), Is.True));
+
     }
 
     [TearDown]
@@ -147,6 +235,39 @@ public class IterationStatementsPart1
 
         // Dam click pe Practice Form option
         practiceFormOption.Click();
+    }
+
+    public void AccessInteractionsSelectableGridTab()
+    {
+        // Definim si initializam un selector (pentru a identifica unic un nod in DOM-ul paginii)
+        By interactionsSelector = By.XPath("//h5[text()='Interactions']");
+
+        // Initializam un webElement care ne permite interactiunea cu elementul din pagina
+        IWebElement interactionsButton = Driver.FindElement(interactionsSelector);
+
+        // Dam click pe element
+        interactionsButton.Click();
+
+        // Definim si initializam selector-ul pentru "Selectable" side menu option
+        By selectableSelector = By.XPath("//span[text()='Selectable']");
+
+        // Initializam webElement-ul pentru Selectable
+        IWebElement selectableOption = Driver.FindElement(selectableSelector);
+
+        // Dam click pe Selectable option
+        selectableOption.Click();
+
+        // Definim si initializam selector-ul pentru "Grid" tab
+        By gridTabSelector = By.Id("demo-tab-grid");
+
+        // Initializam webElement-ul pentru Grid tab
+        IWebElement gridTab = Driver.FindElement(gridTabSelector);
+
+        // Dam click pe Grid tab
+        gridTab.Click();
+
+        // Scroll
+        jsExecutor.ExecuteScript("window.scrollTo(0, 500);");
     }
 
     public void SelectDateFromCalendar(string currentYear, string currentMonthName, string currentMonthDay)
